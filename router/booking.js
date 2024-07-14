@@ -34,7 +34,7 @@ router.post('/userBooking/:userId', async (req, res) => {
 
 
 router.post('/create-checkout-session', async (req, res) => {
-    YOUR_DOMAIN = 'http://localhost:3000/booking'
+    YOUR_DOMAIN = 'http://localhost:5173/booking'
     const { price } = req.body;
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
