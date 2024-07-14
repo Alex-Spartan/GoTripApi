@@ -15,7 +15,10 @@ const port = 3000;
 const router = Router();
 app.use(cors({
     credentials: true,
-    origin: ['https://client-a9quu63pa-alex-spartans-projects.vercel.app', 'https://client-omega-indol.vercel.app']
+    origin: [
+        'https://client-a9quu63pa-alex-spartans-projects.vercel.app', 
+        'https://client-omega-indol.vercel.app'
+    ]
 }));
 app.use(express.json());
 app.use(cookieParser());
