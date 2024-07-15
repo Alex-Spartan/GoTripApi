@@ -17,7 +17,8 @@ app.use(cors({
     credentials: true,
     origin: [
         'https://client-a9quu63pa-alex-spartans-projects.vercel.app', 
-        'https://client-omega-indol.vercel.app'
+        'https://client-omega-indol.vercel.app',
+        'client-alex-spartans-projects.vercel.app',
     ]
 }));
 app.use(express.json());
