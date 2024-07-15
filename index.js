@@ -15,11 +15,7 @@ const port = 3000;
 const router = Router();
 app.use(cors({
     credentials: true,
-    origin: [
-        'https://client-a9quu63pa-alex-spartans-projects.vercel.app', 
-        'https://client-omega-indol.vercel.app',
-        'https://client-alex-spartans-projects.vercel.app',
-    ]
+    origin: "https://gotrip-virid.vercel.app"
 }));
 app.use(express.json());
 app.use(cookieParser());
