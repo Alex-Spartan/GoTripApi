@@ -15,7 +15,7 @@ const port = 3000;
 const router = Router();
 app.use(cors({
     credentials: true,
-    origin: "https://gotrip-virid.vercel.app"
+    origin: "http://localhost:5173"
 }));
 app.use(express.json());
 app.use(cookieParser());

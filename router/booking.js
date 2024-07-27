@@ -34,7 +34,8 @@ router.post('/userBooking/:userId', async (req, res) => {
 
 
 router.post('/create-checkout-session', async (req, res) => {
-    YOUR_DOMAIN = 'https://client-a9quu63pa-alex-spartans-projects.vercel.app//booking'
+    // YOUR_DOMAIN = 'https://client-a9quu63pa-alex-spartans-projects.vercel.app/booking'
+    YOUR_DOMAIN = 'http://localhost:5173/success'
     const { price } = req.body;
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
