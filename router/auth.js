@@ -54,8 +54,8 @@ router.get('/profile', async (req, res) => {
                     return res.status(500).json(err);
                 }
                 if (!data) return res.status(401).json("Unauthorized");
-                const user = await User.findById(data._id)
-                res.status(200).json(user)
+                const user = await User.findById(data._id);
+                res.status(200).json(user);
             })
         } else {
             res.json(null)

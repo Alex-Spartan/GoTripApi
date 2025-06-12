@@ -34,8 +34,7 @@ router.post('/userBooking/:userId', async (req, res) => {
 
 
 router.post('/create-checkout-session', async (req, res) => {
-    // YOUR_DOMAIN = 'https://client-a9quu63pa-alex-spartans-projects.vercel.app/booking'
-    YOUR_DOMAIN = 'http://localhost:5173/success'
+    YOUR_DOMAIN = 'https://gotrip-virid.vercel.app//booking'
     const { price } = req.body;
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -58,10 +57,11 @@ router.post('/create-checkout-session', async (req, res) => {
         cancel_url: `${YOUR_DOMAIN}/cancelled`,
     });
 
-    res.json({ id: session.id});
+    res.json({ id: session.id });
 });
 
-router.get('/user/:id', async ( req, res) => {
+
+router.get('/user/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const data = await User.findById(id);

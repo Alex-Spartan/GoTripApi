@@ -3,12 +3,13 @@ const download = require('image-downloader');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
+// const { storage } = require('../firebase');
+
 
 const Accomodation = require('../models/Accomodation')
 
 
 const router = Router();
-const photosMiddleware = multer({ dest: 'uploads' })
 
 router.post('/image-upload', async (req, res) => {
     const { url, id } = req.body;
@@ -83,28 +84,7 @@ router.delete('/rooms/:id', async (req, res) => {
     }
 })
 
-router.post('/upload', photosMiddleware.array('photos', 100), async (req, res) => {
-    const id = req.body.id;
-    const uploadDir = path.join(__dirname, '../uploads', id);
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    let uploadedFiles = [];
-    try {
-        for (let i = 0; i < req.files.length; i++) {
-            const { path: tempPath, originalname, filename } = req.files[i];
-            const parts = originalname.split('.');
-            const ext = parts[parts.length - 1];
-            const newPath = path.join(uploadDir, filename + '.' + ext);
-            fs.renameSync(tempPath, newPath);
-            uploadedFiles.push(id + '/' + filename + '.' + ext);
-        }
-        res.json(...uploadedFiles);
-    } catch (err) {
-        res.json({ error: err });
-    }
-})
-
+//Accomodations
 
 router.get('/accomodation', async (req, res) => {
     try {
