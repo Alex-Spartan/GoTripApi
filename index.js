@@ -1,5 +1,4 @@
 const express = require('express');
-const Router = express.Router;
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -9,13 +8,13 @@ dotenv.config();
 const authRouter = require('./router/auth.js');
 const accomodationRouter = require('./router/accomodationForm.js');
 const bookingRouter = require('./router/booking.js')
-//kbs9Fq4X4BIsJqqV
+
 const app = express();
 const port = 3000;
-const router = Router();
+
 app.use(cors({
-    credentials: true,
-    origin: "https://gotrip-virid.vercel.app"
+  credentials: true,
+  origin: ["http://localhost:5173", "https://gotrip-virid.vercel.app"] // Use your frontend URL here, not '*'
 }));
 app.use(express.json());
 app.use(cookieParser());
