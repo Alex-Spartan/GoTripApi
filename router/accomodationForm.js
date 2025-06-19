@@ -6,65 +6,41 @@ const multer = require('multer');
 // const { storage } = require('../firebase');
 
 
-const Accomodation = require('../models/Accomodation')
+const Accomodation = require('../models/Accomodation');
+const Room = require('../models/Room');
 
 
 const router = Router();
 
-router.post('/image-upload', async (req, res) => {
-    const { url, id } = req.body;
-    const imagesDir = path.join(__dirname, `../uploads/${id}`);
-    const date = Date.now();
-    const filename = path.join(imagesDir, `${date}.jpg`);
-    const options = {
-        url: url,
-        dest: filename
-    }
+router.get('/rooms', async (req, res) => {
     try {
-        if (!fs.existsSync(imagesDir)) {
-            fs.mkdirSync(imagesDir, { recursive: true });
-        }
-        await download.image(options);
-        res.json(`${id}/${date}.jpg`);
+        const data = await Room.find().populate('accomodation');
+        res.status(200).json(data);
     } catch (err) {
-        res.json({ error: err });
+        res.status(500).json(err);
     }
-})
+});
 
-
-router.post('/room/image-upload', async (req, res) => {
-    const { url, id } = req.body;
-    const imagesDir = path.join(__dirname, `../uploads/${id}/room`);
-    const date = Date.now();
-    const filename = path.join(imagesDir, `${date}.jpg`);
-    const options = {
-        url: url,
-        dest: filename
-    }
-    try {
-        if (!fs.existsSync(imagesDir)) {
-            fs.mkdirSync(imagesDir, { recursive: true });
-        }
-        await download.image(options);
-        res.json(`${id}/room/${date}.jpg`);
-    } catch (err) {
-        res.json({ error: err });
-    }
-})
 
 router.post('/rooms/:id', async (req, res) => {
     const { id } = req.params;
     const formData = req.body;
     try {
+        if (!id) {
+            return res.status(400).json({ error: "Id not provided" });
+        }
         const data = await Accomodation.findById(id);
         if (!data) {
             return res.status(404).json({ error: "Accomodation not found" });
         }
-        data.rooms.push(formData);
+        const room = new Room(formData);
+        room.accomodation = id;
+        data.rooms = room._id;
+        await room.save();
         await data.save();
-        res.json({ message: "Room added" });
+        res.status(201).json({ message: "Room created successfully", error: false, room });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ message: err.message, error: true });
     }
 })
 
@@ -89,24 +65,23 @@ router.delete('/rooms/:id', async (req, res) => {
 router.get('/accomodation', async (req, res) => {
     try {
         const data = await Accomodation.find();
-        res.json(data);
+        res.status(200).json(data);
     } catch (err) {
         res.status(500).json(err);
     }
 })
 
 router.post('/accomodation', async (req, res) => {
-    const formData = req.body;
-
     try {
+        const formData = req.body;
+
         const accomodation = new Accomodation(formData);
         await accomodation.save();
-        res.json({ message: "Accomodation added" });
+        res.status(201).json({ message: "Accomodation created successfully", error: false });
     } catch (err) {
-        res.status(500).json( err );
+        res.status(500).json({ message: err.message, error: true });
     }
-
-})
+});
 
 router.get('/accomodation/:id', async (req, res) => {
     const { id } = req.params;

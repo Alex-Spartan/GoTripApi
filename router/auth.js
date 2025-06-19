@@ -7,43 +7,96 @@ const router = express.Router();
 
 router.post('/signup', async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { fullName, email, password } = req.body;
+
+        const existing = await User.findOne({ email });
+        if (existing) {
+            return res.status(400).json({ message: "User already exists", error: true });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         const user = new User({
-            name: name,
-            email: email,
-            password: await bcrypt.hash(password, 10)
+            fullName,
+            email,
+            password: hashedPassword,
+            method: 'email',
         });
+
         await user.save();
-        res.status(201).json(user);
+
+        res.status(201).json({ message: "User created", error: false });
     } catch (error) {
         console.log(error);
-        res.status(500).send("Internal Server Error");
+        res.status(500).json({ message: "Internal Server Error", error: true });
     }
-})
+});
 
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email: email });
-        const isMatch = bcrypt.compare(password, user.password);
 
-        if (user && isMatch) {
-            jwt.sign({ email: email, id: user._id, name: user.name }, process.env.JWT_KEY, { expiresIn: '1h' }, (err, token) => {
-                if (err) {
-                    console.log(err);
-                    res.status(500).send("Internal Server Error")
-                }
-                res.cookie('token', token).status(200).send(user)
-            })
+        const user = await User.findOne({ email, method: 'email' });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid credentials", error: true });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Invalid credentials", error: true });
+        }
+
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.cookie('token', token).status(200).json({
+            message: "Login successful",
+            error: false,
+            user,
+            token
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error: true });
+    }
+});
+
+// Google Login
+router.post('/google-login', async (req, res) => {
+    try {
+        const { email, fullName, uid } = req.body;
+        let user = await User.findOne({ email });
+
+        if (user === null) {
+            user = new User({
+                fullName,
+                email,
+                method: 'google',
+                googleId: uid,
+            });
+
+            await user.save();
+
+            const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            res.status(200).json({
+                message: "Login successful",
+                error: false,
+                user,
+                token
+            });
         } else {
-            res.status(401).send("Invalid")
+            res.status(200).json({
+                message: "User already exists",
+                error: false,
+                user: user,
+            });
         }
 
     } catch (error) {
         console.log(error);
-        res.status(500).send("Internal Server Error");
+        res.status(500).json({ message: "Internal Server Error", error: true });
     }
-})
+});
 
 router.get('/profile', async (req, res) => {
     try {
@@ -60,15 +113,6 @@ router.get('/profile', async (req, res) => {
         } else {
             res.json(null)
         }
-    } catch (err) {
-        console.log(err);
-    }
-})
-
-router.post('/logout', (req, res) => {
-    try {
-        res.cookie("token", "");
-        res.status(200).json("deleted");
     } catch (err) {
         console.log(err);
     }

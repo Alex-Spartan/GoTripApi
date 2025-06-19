@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 
 
 const UserSchema = new mongoose.Schema({
-    name: {
+    fullName: {
         type: String,
-        require: true,
     },
     email: {
         type: String,
@@ -12,13 +11,21 @@ const UserSchema = new mongoose.Schema({
         Unique: true,
     },
     status: {
+        type: Number,
+        require: true,
+        default: 0 //0: customer, 1: admin
+    },
+    method: {
         type: String,
         require: true,
-        default: 'customer'
+        default: 'email',
+        enum: ['email', 'google']
     },
     password: {
         type: String,
-        require: true,
+    },
+    googleId: {
+        type: String,
     },
     bookings: [{
         hotel: {
@@ -38,8 +45,8 @@ const UserSchema = new mongoose.Schema({
             require: true,
         },
 
-    }]
-})
+    }],
+}, { timestamps: true })
 
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
