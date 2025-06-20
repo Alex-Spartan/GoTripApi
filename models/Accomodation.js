@@ -15,15 +15,20 @@ const accomodationSchema = new mongoose.Schema({
         min: 0,
         max: 5
     },
-    rooms: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Room',
-        }
-    ],
+    roomTypes: [{
+        _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+        name: { type: String, required: true },
+        maxOccupancy: { type: Number, default: 2 },
+        bedType: String,
+        size: { type: Number, default: 35 },
+        price: { type: Number, default: 0 },
+        images: [String],
+        amenities: [String],
+        available: { type: Boolean, default: true }
+    }],
     guests: [
         {
-            name: { type: String, required: true },
+            fullName: { type: String, required: true },
             email: { type: String, required: true },
             phone: { type: String, required: true },
             guestId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

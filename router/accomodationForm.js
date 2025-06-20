@@ -7,19 +7,10 @@ const multer = require('multer');
 
 
 const Accomodation = require('../models/Accomodation');
-const Room = require('../models/Room');
 
 
 const router = Router();
 
-router.get('/rooms', async (req, res) => {
-    try {
-        const data = await Room.find().populate('accomodation');
-        res.status(200).json(data);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
 
 
 router.post('/rooms/:id', async (req, res) => {
@@ -74,7 +65,9 @@ router.get('/accomodation', async (req, res) => {
 router.post('/accomodation', async (req, res) => {
     try {
         const formData = req.body;
-
+        if (!formData.title || !formData.address) {
+            return res.status(400).json({ message: "Title and address are required", error: true });
+        }
         const accomodation = new Accomodation(formData);
         await accomodation.save();
         res.status(201).json({ message: "Accomodation created successfully", error: false });
