@@ -26,14 +26,9 @@ const accomodationSchema = new mongoose.Schema({
         amenities: [String],
         available: { type: Boolean, default: true }
     }],
-    guests: [
-        {
-            fullName: { type: String, required: true },
-            email: { type: String, required: true },
-            phone: { type: String, required: true },
-            guestId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        }
-    ]
+
+}, {
+    timestamps: true,
 });
 
 const Place = mongoose.model('Place', accomodationSchema);

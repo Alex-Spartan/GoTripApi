@@ -27,25 +27,6 @@ const UserSchema = new mongoose.Schema({
     googleId: {
         type: String,
     },
-    bookings: [{
-        hotel: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Accomodation'
-        },
-        price: {
-            type: Number,
-            require: true,
-        },
-        checkIn: {
-            type: Date,
-            require: true,
-        },
-        checkOut: {
-            type: Date,
-            require: true,
-        },
-
-    }],
 }, { timestamps: true })
 
 const User = mongoose.model('User', UserSchema);

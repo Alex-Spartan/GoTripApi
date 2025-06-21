@@ -32,7 +32,7 @@ app.get('/test', (req, res) => {
 
 app.use('/auth', authRouter);
 app.use('/places', accomodationRouter);
-app.use('/booking', bookingRouter);
+app.use('/bookings', bookingRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

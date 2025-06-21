@@ -1,36 +1,74 @@
 const { Router } = require('express');
 const Accomodation = require('../models/Accomodation')
-const User = require("../models/User")
+const User = require("../models/User");
+const Bookings = require('../models/Bookings');
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const router = Router();
 
 
-router.post('/roomBooking/:placeId', async (req, res) => {
-    const { placeId } = req.params;
-    const guestData = req.body;
-    try {
-        const data = await Accomodation.findById(placeId);
-        data.guests.push(guestData);
-        await data.save();
-        res.json({ message: "booking created" });
-    } catch (err) {
-        res.status(500).json(err);
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        return res.status(400).json({ message: "User ID is required", error: true });
     }
+    try {
+        const bookings = await Bookings.find({ userId: id }).populate('hotelId', 'title address images');
+        if (!bookings || bookings.length === 0) {
+            return res.status(404).json({ message: "No bookings found for this user", error: true });
+        }
+        res.status(200).json({ message: "Booking found", error: false, bookings });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error", error: true });
+    }
+});
+
+router.post('/', async (req, res) => {
+    const data = req.body;
+    if (!data.userId ||
+        !data.hotelId ||
+        !data.checkInDate ||
+        !data.checkOutDate ||
+        !data.rooms ||
+        !data.totalAmount) {
+        return res.status(400).json({ message: "All fields are required", error: true });
+    }
+    const booking = new Bookings({
+        ...data,
+    });
+    await booking.save()
+    return res.status(201).json({ message: "Booking created successfully", error: false });
 })
 
 
-router.post('/userBooking/:userId', async (req, res) => {
-    const { userId } = req.params;
+router.put('/:id', async (req, res) => {
+    const { id } = req.params;
     const bookingData = req.body;
     try {
-        const data = await User.findById(userId);
-        data.bookings.push(bookingData);
-        await data.save();
-        res.json({ message: "booking created" });
+        const updatedBooking = await Bookings.findByIdAndUpdate(id, bookingData);
+        if (!updatedBooking) {
+            return res.status(404).json({ message: "Booking not found", error: true });
+        }
+        res.status(200).json({ message: "Booking updated successfully", error: false });
     } catch (err) {
-        res.status(500).json(err);
+        console.error(err);
+        res.status(500).json({ message: "Internal server error", error: true });
     }
 });
+
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const deletedBooking = await Bookings.findByIdAndDelete(id);
+        if (!deletedBooking) {
+            return res.status(404).json({ message: "Booking not found", error: true });
+        }
+        res.status(200).json({ message: "Booking deleted successfully", error: false });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error", error: true });
+    }
+})
 
 
 router.post('/create-checkout-session', async (req, res) => {
@@ -60,16 +98,6 @@ router.post('/create-checkout-session', async (req, res) => {
     res.json({ id: session.id });
 });
 
-
-router.get('/user/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const data = await User.findById(id);
-        res.json(data.bookings);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-})
 
 
 module.exports = router;
