@@ -51,7 +51,6 @@ router.delete('/rooms/:id', async (req, res) => {
     }
 })
 
-//Accomodations
 
 router.get('/accomodation', async (req, res) => {
     try {

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bookingSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    hotelId: { type: mongoose.Schema.Types.ObjectId, ref: "Hotel", required: true },
+    hotelId: { type: mongoose.Schema.Types.ObjectId, ref: "Places", required: true },
     hotelName: { type: String, required: true },
     checkInDate: { type: String, required: true },
     checkOutDate: { type: String, required: true },
@@ -11,8 +11,12 @@ const bookingSchema = new mongoose.Schema(
       adults: { type: Number, required: true },
       children: { type: Number, required: true },
     },
+    roomId: { type: mongoose.Schema.Types.ObjectId, ref: "Places", required: true },
     rooms: { type: Number, required: true },
+    currency: { type: String, required: true },
     totalAmount: { type: Number, required: true },
+    customerEmail: { type: String, required: true },
+    customerPhone: { type: String, required: true },
     status: {
       type: String,
       enum: ["pending", "confirmed", "cancelled", "completed"],
@@ -24,6 +28,8 @@ const bookingSchema = new mongoose.Schema(
       default: "pending",
     },
     bookingReference: { type: String, required: true, unique: true },
+    customerEmail: { type: String, required: true },
+    customerPhone: { type: String, required: true },
   },
   { timestamps: true }
 );
