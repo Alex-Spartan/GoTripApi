@@ -12,7 +12,7 @@ router.get('/:id', async (req, res) => {
         return res.status(400).json({ message: "User ID is required", error: true });
     }
     try {
-        const bookings = await Bookings.find({ userId: id }).populate('hotelId');
+        const bookings = await Bookings.find({ userId: id })
         if (!bookings || bookings.length === 0) {
             return res.status(404).json({ message: "No bookings found for this user", error: true });
         }

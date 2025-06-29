@@ -25,7 +25,12 @@ router.post('/signup', async (req, res) => {
 
         await user.save();
 
-        res.status(201).json({ message: "User created", error: false });
+        res.status(201).json({ message: "User created", error: false, user: {
+            fullName: user.fullName,
+            email: user.email,
+            method: user.method,
+            _id: user._id,
+        } });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error", error: true });
@@ -51,8 +56,13 @@ router.post('/login', async (req, res) => {
         res.cookie('token', token).status(200).json({
             message: "Login successful",
             error: false,
-            user,
-            token
+            token,
+            user: {
+                fullName: user.fullName,
+                email: user.email,
+                method: user.method,
+                _id: user._id,
+            },
         });
 
     } catch (error) {
@@ -74,9 +84,9 @@ router.post('/google-login', async (req, res) => {
                 method: 'google',
                 googleId: uid,
             });
-
+            
             await user.save();
-
+            
             const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
             res.status(200).json({
                 message: "Login successful",

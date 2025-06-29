@@ -8,7 +8,6 @@ dotenv.config();
 const authRouter = require('./router/auth.js');
 const accomodationRouter = require('./router/accomodationForm.js');
 const bookingRouter = require('./router/booking.js')
-const wishlistRouter = require('./router/wishlist.js');
 
 const app = express();
 const port = 3000;
@@ -34,7 +33,6 @@ app.get('/test', (req, res) => {
 app.use('/auth', authRouter);
 app.use('/places', accomodationRouter);
 app.use('/bookings', bookingRouter);
-app.use('/wishlist', wishlistRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
