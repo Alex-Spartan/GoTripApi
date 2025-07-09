@@ -14,7 +14,7 @@ const port = 3000;
 
 app.use(cors({
   credentials: true,
-  origin: ["http://localhost:5173", "https://gotrip-virid.vercel.app"] // Use your frontend URL here, not '*'
+  origin: ["http://localhost:5173", process.env.CLIENT_URI]
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -26,10 +26,11 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
     console.log(err);
 });
 
-app.get('/test', (req, res) => {
-    res.send('Hello, World!');
+app.get('/health', (req, res) => {
+    res.json({status: 'ok', timestamp: new Date().toISOString()});
 });
 
+// Add to your backend
 app.use('/auth', authRouter);
 app.use('/places', accomodationRouter);
 app.use('/bookings', bookingRouter);
