@@ -1,0 +1,171 @@
+{
+  "C:\\Users\\alexr\\OneDrive\\Desktop\\Hrushi\\Projects\\React\\Hotel-site\\GoTripApi\\serverless.yml": {
+    "versionFramework": "4.17.1",
+    "servicePath": "C:\\Users\\alexr\\OneDrive\\Desktop\\Hrushi\\Projects\\React\\Hotel-site\\GoTripApi\\serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "hotel-booking-serverless",
+      "useDotenv": true,
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs20.x",
+        "region": "us-east-1",
+        "timeout": 10,
+        "environment": {
+          "MONGO_URL": "${env:MONGO_URL}",
+          "JWT_SECRET": "<REDACTED>",
+          "STRIPE_SECRET_KEY": "<REDACTED>"
+        }
+      },
+      "functions": {
+        "auth": {
+          "handler": "handlers/auth.handler",
+          "events": [
+            {
+              "http": {
+                "path": "auth/signup",
+                "method": "post"
+              }
+            },
+            {
+              "http": {
+                "path": "auth/login",
+                "method": "post"
+              }
+            },
+            {
+              "http": {
+                "path": "auth/google-login",
+                "method": "post"
+              }
+            },
+            {
+              "http": {
+                "path": "auth/profile",
+                "method": "get"
+              }
+            }
+          ]
+        },
+        "places": {
+          "handler": "handlers/accommodation.handler",
+          "events": [
+            {
+              "http": {
+                "path": "places",
+                "method": "get"
+              }
+            },
+            {
+              "http": {
+                "path": "places/{id}",
+                "method": "get"
+              }
+            },
+            {
+              "http": {
+                "path": "places",
+                "method": "post"
+              }
+            },
+            {
+              "http": {
+                "path": "places/{id}",
+                "method": "put"
+              }
+            }
+          ]
+        },
+        "booking": {
+          "handler": "handlers/booking.handler",
+          "events": [
+            {
+              "http": {
+                "path": "bookings",
+                "method": "post"
+              }
+            },
+            {
+              "http": {
+                "path": "bookings/{id}",
+                "method": "get"
+              }
+            },
+            {
+              "http": {
+                "path": "bookings/{id}",
+                "method": "put"
+              }
+            },
+            {
+              "http": {
+                "path": "bookings/{id}",
+                "method": "delete"
+              }
+            },
+            {
+              "http": {
+                "path": "bookings/create-payment-intent",
+                "method": "post"
+              }
+            }
+          ]
+        }
+      },
+      "plugins": [
+        "serverless-dotenv-plugin",
+        "serverless-offline-ssm",
+        "serverless-offline",
+        "serverless-dotenv-plugin"
+      ],
+      "package": {
+        "individually": true
+      },
+      "resources": {
+        "Resources": null
+      }
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs20.x",
+      "region": "us-east-1",
+      "timeout": 10,
+      "environment": {
+        "MONGO_URL": "${env:MONGO_URL}",
+        "JWT_SECRET": "<REDACTED>",
+        "STRIPE_SECRET_KEY": "<REDACTED>"
+      }
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "error": {
+      "message": "Cannot resolve '${env:MONGO_URL}' variable at 'provider.environment.MONGO_URL'. No value is available for this variable, and no default value was provided. Please check your variable definitions or provide a default value.",
+      "stack": "Error: Cannot resolve '${env:MONGO_URL}' variable at 'provider.environment.MONGO_URL'. No value is available for this variable, and no default value was provided. Please check your variable definitions or provide a default value.\n    at _ResolverManager.resolve (C:\\Users\\alexr\\.serverless\\releases\\4.17.1\\sf-core\\src\\lib\\resolvers\\manager.js:802:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async _ResolverManager.#handlePlaceholderNode (C:\\Users\\alexr\\.serverless\\releases\\4.17.1\\sf-core\\src\\lib\\resolvers\\manager.js:703:9)\n    at async <anonymous> (C:\\Users\\alexr\\.serverless\\releases\\4.17.1\\sf-core\\src\\lib\\resolvers\\manager.js:579:11)\n    at async processNodeAndHandleCompletion (C:\\Users\\alexr\\.serverless\\releases\\4.17.1\\sf-core\\src\\lib\\resolvers\\graph.js:33:5)",
+      "code": "MISSING_VARIABLE_RESULT"
+    },
+    "serviceRawFile": "service: hotel-booking-serverless\r\n\r\nuseDotenv: true\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: nodejs20.x\r\n  region: us-east-1\r\n  timeout: 10\r\n  environment:\r\n    MONGO_URL: ${env:MONGO_URL}\r\n    JWT_SECRET: ${env:JWT_SECRET}\r\n    STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}\r\n\r\nfunctions:\r\n  auth:\r\n    handler: handlers/auth.handler\r\n    events:\r\n      - http:\r\n          path: auth/signup\r\n          method: post\r\n      - http:\r\n          path: auth/login\r\n          method: post\r\n      - http:\r\n          path: auth/google-login\r\n          method: post\r\n      - http:\r\n          path: auth/profile\r\n          method: get\r\n\r\n  places:\r\n    handler: handlers/accommodation.handler\r\n    events:\r\n      - http:\r\n          path: places\r\n          method: get\r\n      - http:\r\n          path: places/{id}\r\n          method: get\r\n      - http:\r\n          path: places\r\n          method: post\r\n      - http:\r\n          path: places/{id}\r\n          method: put\r\n\r\n  booking:\r\n    handler: handlers/booking.handler\r\n    events:\r\n      - http:\r\n          path: bookings\r\n          method: post\r\n      - http:\r\n          path: bookings/{id}\r\n          method: get\r\n      - http:\r\n          path: bookings/{id}\r\n          method: put\r\n      - http:\r\n          path: bookings/{id}\r\n          method: delete\r\n      - http:\r\n          path: bookings/create-payment-intent\r\n          method: post\r\n\r\nplugins:\r\n  - serverless-dotenv-plugin\r\n  - serverless-offline-ssm\r\n  - serverless-offline\r\n  - serverless-dotenv-plugin\r\n\r\npackage:\r\n  individually: true\r\n\r\nresources:\r\n  Resources:\r\n    # Add any additional AWS resources here if needed.\r\n",
+    "command": [
+      "offline",
+      "start"
+    ],
+    "options": {
+      "debug": "*"
+    },
+    "orgId": "eb227bd5-0bd2-443e-868c-a31afeaba0ab",
+    "orgName": "alexspartan",
+    "userId": "dVhXZ5Cj0RF6kc7w26",
+    "userName": "alexspartan",
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  }
+}

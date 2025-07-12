@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema(
   {
@@ -28,10 +28,10 @@ const bookingSchema = new mongoose.Schema(
       default: "pending",
     },
     bookingReference: { type: String, required: true, unique: true },
-    customerEmail: { type: String, required: true },
-    customerPhone: { type: String, required: true },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Booking", bookingSchema);
+const Booking = mongoose.model("Booking", bookingSchema);
+
+export default Booking;

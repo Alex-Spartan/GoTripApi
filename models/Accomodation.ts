@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const accomodationSchema = new mongoose.Schema({
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -32,5 +32,6 @@ const accomodationSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-const Place = mongoose.model('Place', accomodationSchema);
-module.exports = Place;
+const Accomodation = mongoose.model('Place', accomodationSchema);
+
+export default Accomodation;

@@ -1,0 +1,76 @@
+service: hotel-booking-serverless
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  timeout: 10
+  environment:
+    MONGO_URL: ${env:MONGO_URL}
+    JWT_SECRET: ${env:JWT_SECRET}
+    STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}
+
+functions:
+  auth:
+    handler: handlers/auth.handler
+    events:
+      - http:
+          path: auth/signup
+          method: post
+      - http:
+          path: auth/login
+          method: post
+      - http:
+          path: auth/google-login
+          method: post
+      - http:
+          path: auth/profile
+          method: get
+
+  places:
+    handler: handlers/accomodation.handler
+    events:
+      - http:
+          path: places
+          method: get
+      - http:
+          path: places/{id}
+          method: get
+      - http:
+          path: places
+          method: post
+      - http:
+          path: places/{id}
+          method: put
+
+  booking:
+    handler: handlers/booking.handler
+    events:
+      - http:
+          path: bookings
+          method: post
+      - http:
+          path: bookings/{id}
+          method: get
+      - http:
+          path: bookings/{id}
+          method: put
+      - http:
+          path: bookings/{id}
+          method: delete
+      - http:
+          path: bookings/create-payment-intent
+          method: post
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+package:
+  individually: true
+
+resources:
+  Resources:
+    # Add any additional AWS resources here if needed.
